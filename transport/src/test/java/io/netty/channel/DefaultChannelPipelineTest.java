@@ -880,6 +880,47 @@ public class DefaultChannelPipelineTest {
         assertTrue(handler2.removedHandler.get());
     }
 
+    @Test(timeout = 3000)
+    public void testAddBefore() throws Throwable {
+        ChannelPipeline pipeline1 = new LocalChannel().pipeline();
+        ChannelPipeline pipeline2 = new LocalChannel().pipeline();
+
+        EventLoopGroup defaultGroup = new DefaultEventLoopGroup(2);
+        try {
+            EventLoop eventLoop1 = defaultGroup.next();
+            EventLoop eventLoop2 = defaultGroup.next();
+
+            eventLoop1.register(pipeline1.channel()).syncUninterruptibly();
+            eventLoop2.register(pipeline2.channel()).syncUninterruptibly();
+
+            for (int i = 0; i < 10; i++) {
+                CountDownLatch latch = new CountDownLatch(2);
+                eventLoop1.submit(new TestTask(pipeline2, latch));
+                eventLoop2.submit(new TestTask(pipeline1, latch));
+                latch.await();
+            }
+        } finally {
+            defaultGroup.shutdownGracefully();
+        }
+    }
+
+    private static final class TestTask implements Runnable {
+
+        private final ChannelPipeline pipeline;
+        private final CountDownLatch latch;
+
+        TestTask(ChannelPipeline pipeline, CountDownLatch latch) {
+            this.pipeline = pipeline;
+            this.latch = latch;
+        }
+
+        @Override
+        public void run() {
+            pipeline.addLast(new ChannelInboundHandlerAdapter());
+            latch.countDown();
+        }
+    };
+
     private static final class CallbackCheckHandler extends ChannelHandlerAdapter {
         final AtomicBoolean addedHandler = new AtomicBoolean();
         final AtomicBoolean removedHandler = new AtomicBoolean();
