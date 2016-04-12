@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 The Netty Project
+ * Copyright 2016 The Netty Project
  *
  * The Netty Project licenses this file to you under the Apache License,
  * version 2.0 (the "License"); you may not use this file except in compliance
@@ -40,7 +40,7 @@ public class DuplicatedByteBuf extends AbstractDerivedByteBuf {
         super(buffer.maxCapacity());
 
         if (buffer instanceof DuplicatedByteBuf) {
-            this.buffer = ((DuplicatedByteBuf) buffer).buffer;
+            this.buffer = buffer.unwrap();
         } else {
             this.buffer = buffer;
         }
@@ -61,6 +61,7 @@ public class DuplicatedByteBuf extends AbstractDerivedByteBuf {
     }
 
     @Override
+    @Deprecated
     public ByteOrder order() {
         return buffer.order();
     }
@@ -127,6 +128,11 @@ public class DuplicatedByteBuf extends AbstractDerivedByteBuf {
     }
 
     @Override
+    public short getShortLE(int index) {
+        return buffer.getShortLE(index);
+    }
+
+    @Override
     protected short _getShortLE(int index) {
         return buffer.getShortLE(index);
     }
@@ -139,6 +145,11 @@ public class DuplicatedByteBuf extends AbstractDerivedByteBuf {
     @Override
     protected int _getUnsignedMedium(int index) {
         return buffer.getUnsignedMedium(index);
+    }
+
+    @Override
+    public int getUnsignedMediumLE(int index) {
+        return buffer.getUnsignedMediumLE(index);
     }
 
     @Override
@@ -157,6 +168,11 @@ public class DuplicatedByteBuf extends AbstractDerivedByteBuf {
     }
 
     @Override
+    public int getIntLE(int index) {
+        return buffer.getIntLE(index);
+    }
+
+    @Override
     protected int _getIntLE(int index) {
         return buffer.getIntLE(index);
     }
@@ -172,6 +188,11 @@ public class DuplicatedByteBuf extends AbstractDerivedByteBuf {
     }
 
     @Override
+    public long getLongLE(int index) {
+        return buffer.getLongLE(index);
+    }
+
+    @Override
     protected long _getLongLE(int index) {
         return buffer.getLongLE(index);
     }
@@ -184,6 +205,11 @@ public class DuplicatedByteBuf extends AbstractDerivedByteBuf {
     @Override
     public ByteBuf slice(int index, int length) {
         return buffer.slice(index, length);
+    }
+
+    @Override
+    public ByteBuf sliceRetained(int index, int length) {
+        return buffer.sliceRetained(index, length);
     }
 
     @Override
@@ -227,6 +253,12 @@ public class DuplicatedByteBuf extends AbstractDerivedByteBuf {
     }
 
     @Override
+    public ByteBuf setShortLE(int index, int value) {
+        buffer.setShortLE(index, value);
+        return this;
+    }
+
+    @Override
     protected void _setShortLE(int index, int value) {
         buffer.setShortLE(index, value);
     }
@@ -240,6 +272,12 @@ public class DuplicatedByteBuf extends AbstractDerivedByteBuf {
     @Override
     protected void _setMedium(int index, int value) {
         buffer.setMedium(index, value);
+    }
+
+    @Override
+    public ByteBuf setMediumLE(int index, int value) {
+        buffer.setMediumLE(index, value);
+        return this;
     }
 
     @Override
@@ -259,6 +297,12 @@ public class DuplicatedByteBuf extends AbstractDerivedByteBuf {
     }
 
     @Override
+    public ByteBuf setIntLE(int index, int value) {
+        buffer.setIntLE(index, value);
+        return this;
+    }
+
+    @Override
     protected void _setIntLE(int index, int value) {
         buffer.setIntLE(index, value);
     }
@@ -272,6 +316,12 @@ public class DuplicatedByteBuf extends AbstractDerivedByteBuf {
     @Override
     protected void _setLong(int index, long value) {
         buffer.setLong(index, value);
+    }
+
+    @Override
+    public ByteBuf setLongLE(int index, long value) {
+        buffer.setLongLE(index, value);
+        return this;
     }
 
     @Override
@@ -342,11 +392,6 @@ public class DuplicatedByteBuf extends AbstractDerivedByteBuf {
     @Override
     public ByteBuffer[] nioBuffers(int index, int length) {
         return buffer.nioBuffers(index, length);
-    }
-
-    @Override
-    public ByteBuffer internalNioBuffer(int index, int length) {
-        return nioBuffer(index, length);
     }
 
     @Override

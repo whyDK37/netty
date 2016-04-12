@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 The Netty Project
+ * Copyright 2016 The Netty Project
  *
  * The Netty Project licenses this file to you under the Apache License,
  * version 2.0 (the "License"); you may not use this file except in compliance
@@ -71,6 +71,7 @@ public class SlicedByteBuf extends AbstractDerivedByteBuf {
     }
 
     @Override
+    @Deprecated
     public ByteOrder order() {
         return buffer.order();
     }
@@ -116,8 +117,18 @@ public class SlicedByteBuf extends AbstractDerivedByteBuf {
     }
 
     @Override
+    public byte getByte(int index) {
+        return buffer.getByte(idx(index));
+    }
+
+    @Override
     protected byte _getByte(int index) {
         return buffer.getByte(idx(index));
+    }
+
+    @Override
+    public short getShort(int index) {
+        return buffer.getShort(idx(index));
     }
 
     @Override
@@ -126,8 +137,18 @@ public class SlicedByteBuf extends AbstractDerivedByteBuf {
     }
 
     @Override
+    public short getShortLE(int index) {
+        return buffer.getShortLE(idx(index));
+    }
+
+    @Override
     protected short _getShortLE(int index) {
         return buffer.getShortLE(idx(index));
+    }
+
+    @Override
+    public int getUnsignedMedium(int index) {
+        return buffer.getUnsignedMedium(idx(index));
     }
 
     @Override
@@ -136,8 +157,18 @@ public class SlicedByteBuf extends AbstractDerivedByteBuf {
     }
 
     @Override
+    public int getUnsignedMediumLE(int index) {
+        return buffer.getUnsignedMediumLE(idx(index));
+    }
+
+    @Override
     protected int _getUnsignedMediumLE(int index) {
         return buffer.getUnsignedMediumLE(idx(index));
+    }
+
+    @Override
+    public int getInt(int index) {
+        return buffer.getInt(idx(index));
     }
 
     @Override
@@ -146,13 +177,28 @@ public class SlicedByteBuf extends AbstractDerivedByteBuf {
     }
 
     @Override
+    public int getIntLE(int index) {
+        return buffer.getIntLE(idx(index));
+    }
+
+    @Override
     protected int _getIntLE(int index) {
         return buffer.getIntLE(idx(index));
     }
 
     @Override
+    public long getLong(int index) {
+        return buffer.getLong(idx(index));
+    }
+
+    @Override
     protected long _getLong(int index) {
         return buffer.getLong(idx(index));
+    }
+
+    @Override
+    public long getLongLE(int index) {
+        return buffer.getLongLE(idx(index));
     }
 
     @Override
@@ -168,6 +214,13 @@ public class SlicedByteBuf extends AbstractDerivedByteBuf {
     }
 
     @Override
+    public ByteBuf duplicateRetained() {
+        ByteBuf duplicate = buffer.sliceRetained(adjustment, length);
+        duplicate.setIndex(readerIndex(), writerIndex());
+        return duplicate;
+    }
+
+    @Override
     public ByteBuf copy(int index, int length) {
         checkIndex0(index, length);
         return buffer.copy(idx(index), length);
@@ -177,6 +230,12 @@ public class SlicedByteBuf extends AbstractDerivedByteBuf {
     public ByteBuf slice(int index, int length) {
         checkIndex0(index, length);
         return buffer.slice(idx(index), length);
+    }
+
+    @Override
+    public ByteBuf sliceRetained(int index, int length) {
+        checkIndex0(index, length);
+        return buffer.sliceRetained(idx(index), length);
     }
 
     @Override
@@ -201,8 +260,20 @@ public class SlicedByteBuf extends AbstractDerivedByteBuf {
     }
 
     @Override
+    public ByteBuf setByte(int index, int value) {
+        buffer.setByte(idx(index), value);
+        return this;
+    }
+
+    @Override
     protected void _setByte(int index, int value) {
         buffer.setByte(idx(index), value);
+    }
+
+    @Override
+    public ByteBuf setShort(int index, int value) {
+        buffer.setShort(idx(index), value);
+        return this;
     }
 
     @Override
@@ -211,8 +282,20 @@ public class SlicedByteBuf extends AbstractDerivedByteBuf {
     }
 
     @Override
+    public ByteBuf setShortLE(int index, int value) {
+        buffer.setShortLE(idx(index), value);
+        return this;
+    }
+
+    @Override
     protected void _setShortLE(int index, int value) {
         buffer.setShortLE(idx(index), value);
+    }
+
+    @Override
+    public ByteBuf setMedium(int index, int value) {
+        buffer.setMedium(idx(index), value);
+        return this;
     }
 
     @Override
@@ -221,8 +304,20 @@ public class SlicedByteBuf extends AbstractDerivedByteBuf {
     }
 
     @Override
+    public ByteBuf setMediumLE(int index, int value) {
+        buffer.setMediumLE(idx(index), value);
+        return this;
+    }
+
+    @Override
     protected void _setMediumLE(int index, int value) {
         buffer.setMediumLE(idx(index), value);
+    }
+
+    @Override
+    public ByteBuf setInt(int index, int value) {
+        buffer.setInt(idx(index), value);
+        return this;
     }
 
     @Override
@@ -231,13 +326,31 @@ public class SlicedByteBuf extends AbstractDerivedByteBuf {
     }
 
     @Override
+    public ByteBuf setIntLE(int index, int value) {
+        buffer.setIntLE(idx(index), value);
+        return this;
+    }
+
+    @Override
     protected void _setIntLE(int index, int value) {
         buffer.setIntLE(idx(index), value);
     }
 
     @Override
+    public ByteBuf setLong(int index, long value) {
+        buffer.setLong(idx(index), value);
+        return this;
+    }
+
+    @Override
     protected void _setLong(int index, long value) {
         buffer.setLong(idx(index), value);
+    }
+
+    @Override
+    public ByteBuf setLongLE(int index, long value) {
+        buffer.setLongLE(idx(index), value);
+        return this;
     }
 
     @Override
@@ -318,11 +431,6 @@ public class SlicedByteBuf extends AbstractDerivedByteBuf {
     public ByteBuffer[] nioBuffers(int index, int length) {
         checkIndex0(index, length);
         return buffer.nioBuffers(idx(index), length);
-    }
-
-    @Override
-    public ByteBuffer internalNioBuffer(int index, int length) {
-        return nioBuffer(index, length);
     }
 
     @Override

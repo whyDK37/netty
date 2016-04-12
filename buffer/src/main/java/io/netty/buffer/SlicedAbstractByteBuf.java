@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 The Netty Project
+ * Copyright 2016 The Netty Project
  *
  * The Netty Project licenses this file to you under the Apache License,
  * version 2.0 (the "License"); you may not use this file except in compliance
@@ -36,8 +36,18 @@ final class SlicedAbstractByteBuf extends SlicedByteBuf {
     }
 
     @Override
+    protected short _getShortLE(int index) {
+        return unwrap0()._getShortLE(idx(index));
+    }
+
+    @Override
     protected int _getUnsignedMedium(int index) {
         return unwrap0()._getUnsignedMedium(idx(index));
+    }
+
+    @Override
+    protected int _getUnsignedMediumLE(int index) {
+        return unwrap0()._getUnsignedMediumLE(idx(index));
     }
 
     @Override
@@ -46,8 +56,18 @@ final class SlicedAbstractByteBuf extends SlicedByteBuf {
     }
 
     @Override
+    protected int _getIntLE(int index) {
+        return unwrap0()._getIntLE(idx(index));
+    }
+
+    @Override
     protected long _getLong(int index) {
         return unwrap0()._getLong(idx(index));
+    }
+
+    @Override
+    protected long _getLongLE(int index) {
+        return unwrap0()._getLongLE(idx(index));
     }
 
     @Override
@@ -61,8 +81,18 @@ final class SlicedAbstractByteBuf extends SlicedByteBuf {
     }
 
     @Override
+    protected void _setShortLE(int index, int value) {
+        unwrap0()._setShortLE(idx(index), value);
+    }
+
+    @Override
     protected void _setMedium(int index, int value) {
         unwrap0()._setMedium(idx(index), value);
+    }
+
+    @Override
+    protected void _setMediumLE(int index, int value) {
+        unwrap0()._setMediumLE(idx(index), value);
     }
 
     @Override
@@ -71,8 +101,18 @@ final class SlicedAbstractByteBuf extends SlicedByteBuf {
     }
 
     @Override
+    protected void _setIntLE(int index, int value) {
+        unwrap0()._setIntLE(idx(index), value);
+    }
+
+    @Override
     protected void _setLong(int index, long value) {
         unwrap0()._setLong(idx(index), value);
+    }
+
+    @Override
+    protected void _setLongLE(int index, long value) {
+        unwrap0()._setLongLE(idx(index), value);
     }
 
     private AbstractByteBuf unwrap0() {
